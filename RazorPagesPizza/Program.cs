@@ -9,7 +9,12 @@ builder.Services.AddDbContext<RazorPagesPizzaAuth>(options => options.UseSqlServ
 builder.Services.AddDefaultIdentity<RazorPagesPizzaUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<RazorPagesPizzaAuth>();
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(options =>
+    options.Conventions.AuthorizePage("/AdminsOnly", "Admin")); // ����"AdminsOnly"
+builder.Services.AddAuthorization(options =>
+    options.AddPolicy("Admin", policy =>
+        policy.RequireAuthenticatedUser()
+            .RequireClaim("IsAdmin", bool.TrueString)));
 
 var app = builder.Build();
 
